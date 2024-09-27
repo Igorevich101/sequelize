@@ -2,6 +2,8 @@
 const {
   Model
 } = require('sequelize');
+import { isAfter, addYears } from "date-fns";
+
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -55,7 +57,15 @@ module.exports = (sequelize, DataTypes) => {
       field: 'is_male'
     },
     birthday: { 
-      type: DataTypes.DATEONLY
+      type: DataTypes.DATEONLY,
+      validate: {
+        isDate: true,
+        isValidDate (value) {
+          if( isAfter(new Date(value), addYears(new Date(), -18))) {
+            throw new Error('Invalid birthday. User must be adult')
+          }
+        }
+      }
     },
     balance: { 
       type: DataTypes.DECIMAL(9,2),
