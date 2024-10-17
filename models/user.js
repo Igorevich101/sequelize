@@ -13,6 +13,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+
+      User.hasMany(models.Todo, {
+        foreignKey: 'userId',
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      });
     }
   }
   User.init({
@@ -54,7 +60,14 @@ module.exports = (sequelize, DataTypes) => {
     },
     isMale: { 
       type: DataTypes.BOOLEAN,
-      field: 'is_male'
+      field: 'is_male',
+      validate: {
+        myValidator (value) {
+          if(value !== 0) {
+            throw new Error('Bad data')
+          }
+        }
+      }
     },
     birthday: { 
       type: DataTypes.DATEONLY,
